@@ -7,10 +7,10 @@ interface PrivateProps{
 }
 
 export function Private({children}: PrivateProps){
-  const {loading, signed} = useContext(AuthContext);
+  const {loadingAuth, signed} = useContext(AuthContext);
 
   console.log(signed)
-  if(loading){
+  if(loadingAuth){
     return <div></div>
   }
   if(!signed){

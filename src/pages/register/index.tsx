@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router';
 import Logo from '../../assets/logo.svg';
 import { Container } from '../../components/container';
@@ -10,6 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import {auth} from '../../services/firebaseConnection';
 import { createUserWithEmailAndPassword, updateProfile, signOut} from 'firebase/auth';
+import { AuthContext } from '../../contexts/auth';
+
+import { toast } from 'react-toastify';
 
 const schema = z.object({
   name: z.string().nonempty("O campo de nome não pode estar vazio"),
@@ -27,6 +30,7 @@ export function SignUp() {
     resolver: zodResolver(schema),
     mode: 'onChange'
   });
+  const { handleInfoUser } = useContext(AuthContext);
 
    useEffect(() => {
       async function handleLogout() {
@@ -38,15 +42,25 @@ export function SignUp() {
 
   async function onSubmit(data: FormData) {
     await createUserWithEmailAndPassword(auth, data.email, data.password).then(async (user) => {
-      console.log(user)
+      
       await updateProfile(user.user, {
         displayName: data.name
       })
+      handleInfoUser({
+        uid: user.user.uid,
+        name: data.name,
+        email: data.email
+      })
+      console.log("User created")
       navigate("/dashboard", {replace: true})
 
     }).catch((err) => {
       console.log("Erro ao criar usuário")
-      console.log(err)
+      if(err.code === "auth/email-already-in-use"){
+        toast.error("Este email já está em uso")}
+      else{
+        toast.error("Ocorreu um erro ao criar o usuário")
+      }
     })
 
   }
