@@ -39,7 +39,8 @@ function AuthProvider({children}: AuthProviderProps) {
         setLoading(false);
       }
     })
-    unsub()
+    return () => {
+      unsub();}
   }, [])
 
   return(

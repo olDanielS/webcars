@@ -7,6 +7,7 @@ import { SignUp } from "./pages/register";
 import { NewCar } from "./pages/dashboard/newCar";
 
 import {Layout} from "./components/layout";
+import { Private } from "./routes/private";
 
 const router = createBrowserRouter([
   {
@@ -21,11 +22,11 @@ const router = createBrowserRouter([
       }
       ,{
         path: "/dashboard",
-        element: <Dashboard />
+        element: <Private><Dashboard/></Private>
       },
       {
         path: "/dashboard/new",
-        element: <NewCar />
+        element: <Private><NewCar/></Private>
       }
     ]
   },
